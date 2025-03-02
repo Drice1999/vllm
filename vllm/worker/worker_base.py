@@ -25,6 +25,8 @@ from vllm.worker.model_runner_base import (BroadcastableModelInput,
                                            ModelRunnerBase,
                                            ModelRunnerInputBase)
 
+from vllm.worker.utils import pin_process_to_cpus
+
 logger = init_logger(__name__)
 
 
@@ -566,6 +568,8 @@ class WorkerWrapperBase:
             # To make vLLM config available during worker initialization
             self.worker = worker_class(**kwargs)
             assert self.worker is not None
+
+        pin_process_to_cpus()
 
     def initialize_from_config(self, kv_cache_configs: List[Any]) -> None:
         kv_cache_config = kv_cache_configs[self.rpc_rank]
